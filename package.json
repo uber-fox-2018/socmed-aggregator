@@ -1,0 +1,22 @@
+{
+  "name": "socmed-aggregator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/talkasrul/socmed-aggregator.git"
+  },
+  "author": "Asrul Harahap",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/talkasrul/socmed-aggregator/issues"
+  },
+  "homepage": "https://github.com/talkasrul/socmed-aggregator#readme",
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
+}
