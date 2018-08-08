@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Socmed Aggregator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+    <button id="getData">Show All Repositories</button>
+    <br>
+    <br>
+    <h3>Add repo:</h3>
+    <form method="POST">
+        <input type="text" id="content" name="repo" placeholder="Input repo name">
+        <button id="submit">Submit</button>
+    </form>
+    <h3 id="msg"></h3>
+    <ol></ol>
+    
+    <script>
+        $('#getData').click(function () {
+            $.ajax({
+                url: 'http://localhost:3000/git',
+                method: 'GET'
+            })
+            .done(function (data) {
+                $("#msg").text(data.msg)
+                $.each(data.data, function(i, data) {
+                    $("ol").append(`<li>${data.name}</li>`)
+                })
+            })
+            .fail(function (err) {
+                $("#error").text(error)
+            })
+        })
+
+        $("#submit").click(function () {
+            event.preventDefault();
+            let content = {
+                name: $("#content").val()
+            }
+            $.ajax({
+                url: 'http://localhost:3000/git/create',
+                method: 'POST',
+                data: content,
+            })
+
+                .done(function (data) {
+                    alert(`New repo created!`);
+                    console.log(data)
+                })
+
+                .fail(function (err) {
+                    alert(`Error!`);
+                    console.log(err)
+                })
+        })
+
+
+    </script>
+</body>
+
+</html>
