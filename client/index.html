@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Github</title>
+</head>
+<body>
+    <script>
+        axios.get('http://localhost:3000/users/repo')
+        .then(result => {
+            data = result.data
+            data.forEach(element => {
+                var node = document.createElement("li");
+                var textnode = node.appendChild(document.createTextNode(element.name))
+                document.getElementById('repositories').appendChild(node)
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        })
+        
+        function add() {
+            var x = document.getElementById("repoName").value;
+            axios.post('http://localhost:3000/users/repo/create', {
+                name: x
+            })
+            .then(newRepo => {
+                document.getElementById('message').innerHTML='Success'
+                location.reload()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
+
+        function search(){
+            var x = document.getElementById("repoSearch").value;
+            axios.get(`http://localhost:3000/users/repo/search?q=${x}`)
+            .then(result => {
+                data = result.data.items
+                data.forEach(element => {
+                    var node = document.createElement("li");
+                    var textnode = node.appendChild(document.createTextNode(element.name))
+                    document.getElementById('searchResult').appendChild(node)
+                })
+                document.getElementById('messageSearch').innerHTML='Success!'
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+        
+    </script>
+
+    <div class="container">
+        <div class="row">
+        <div class="col-sm">
+            <h4>Create new repository</h4>
+            <input type="text" id="repoName">
+            <button onclick="add()">Create</button>
+            <p id="message" style="color:green"></p><br><br>
+
+            <h4>Search repository</h4>
+            <input type="text" id="repoSearch">
+            <button onclick="search()">Search</button><br>
+            <p id="messageSearch" style="color:green"></p>
+        </div>
+        <div class="col-sm">
+            <ul id="repositories">Setia's Repositories</ul>
+        </div>
+        <div class="col-sm">
+            <ul id="searchResult">Search Result</ul>
+        </div>
+        </div>
+    </div>
+</body>
+</html>
