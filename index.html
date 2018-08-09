@@ -20,6 +20,13 @@
         <input type="text" id="content" name="repo" placeholder="Input repo name">
         <button id="submit">Submit</button>
     </form>
+    <br>
+    <br>
+    <h3>Search for Repo:</h3>
+    <form method="GET">
+        <input type="text" id="input" name="repo" placeholder="Search repositories">
+        <button id="search" type="submit">Search</button>
+    </form>
     <h3 id="msg"></h3>
     <ol></ol>
     
@@ -53,13 +60,36 @@
 
                 .done(function (data) {
                     alert(`New repo created!`);
-                    console.log(data)
+                    console.log(data);
                 })
 
                 .fail(function (err) {
                     alert(`Error!`);
-                    console.log(err)
+                    console.log(err);
                 })
+        })
+
+        $("#search").click(function () {
+            event.preventDefault();
+            let searchData = $("#input").val();
+            // console.log('==>>', searchData)
+
+            $.ajax({
+                url: `http://localhost:3000/git/search`,
+                method: 'GET',
+                data: {q: searchData}
+            })
+            .done(function (res) {
+                // console.log(res)
+                $("#msg").text(res.msg)
+                for (let i = 0; i < res.data.items.length; i++) {
+                    $("ol").append(`<li>${res.data.items[i].name}</li>`)
+                }
+            })
+            .fail(function (err) {
+                // alert(`Error!`);
+                console.log(err);
+            })
         })
 
 
