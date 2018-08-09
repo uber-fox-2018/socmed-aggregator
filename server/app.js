@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('dotenv').config()
 var cors = require('cors')
+const mongoose = require('mongoose');
+mongoose.connect(`mongodb://${process.env.dbuser}:${process.env.dbpass}@ds117362.mlab.com:17362/socmedagregation`, { useNewUrlParser: true });
 var indexRouter = require('./routes/index');
 
 var app = express();
@@ -15,7 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/users', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

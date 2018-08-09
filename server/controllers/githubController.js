@@ -3,7 +3,7 @@ const request = require('request')
 class GithubController {
     static userRepoList(req, res){
         var options = {
-            url: 'https://api.github.com/users/setiaanggraeni/repos',
+            url: 'https://api.github.com/user/repos',
             headers: {
               'User-Agent': 'request',
               'Accept': 'application/vnd.github.nightshade-preview+json',
@@ -14,7 +14,15 @@ class GithubController {
         function callback(error, response, body) {
             if (!error && response.statusCode == 200) {
               var info = JSON.parse(body);
+            //   console.log(info)
+            //   info.forEach(data => {
+            //       console.log(data.name)
+            //   })
+            //   console.log(info.length)
               res.status(200).json(info)
+            } else {
+                console.log(body)
+                res.status(500).json(error)
             }
         }
            
@@ -34,7 +42,7 @@ class GithubController {
             }
         }
         , function (err, response, body) {
-            if(err) res.json(err)
+            if(err) res.status(500).json(err)
             res.status(200).json(body)
         })
     }
@@ -53,6 +61,8 @@ class GithubController {
             if (!error && response.statusCode == 200) {
               var info = JSON.parse(body);
               res.status(200).json(info)
+            } else{
+                res.status(500).json(error)
             }
         }
            
