@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+  <h1 style="text-align: center">GitHaaap</h1>
+  <h3 style="text-align: center">
+      แอ็พพลิเคชัน githap มีประโยชน์มากสำหรับนักพัฒนาซอฟต์แวร์</h3>
+  <script>
+
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '1717300045051131',
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v3.1'
+      });
+    };
+
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) { return; }
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    function checkLoginState() {
+      FB.getLoginStatus(function (response) {
+        console.log(response);
+        
+        if (response.status == 'connected') {
+
+          axios.post('http://localhost:3000/users/signin', response.authResponse)
+            .then(function (response) {
+              console.log(response.data.token);
+              localStorage.setItem('token', response.data.token)
+            })
+            .catch(function (err) {
+              console.log(err);
+            })
+        }
+      });
+    }
+
+  </script>
+  <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+  </fb:login-button>
+</body>
+
+</html>
