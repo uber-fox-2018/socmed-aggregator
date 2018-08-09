@@ -7,47 +7,98 @@
     <title>Socmed Aggregator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+    <script type="text/javascript" src="js/disable_radio.js"></script>
 </head>
 
 <body>
-    <button id="getData">Show All Repositories</button>
+
+    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+    </fb:login-button>
     <br>
+    <br>
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '1062811000540139',
+                autoLogAppEvents: true,
+                xfbml: true,
+                version: 'v3.1'
+            });
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        function checkLoginState() {
+            FB.getLoginStatus(function (response) {
+                console.log(response)
+
+                if (response.status == 'connected') {
+                    //access /signin/facebook and send authResponse
+                    axios.post('http://localhost:3000/git/signin/facebook', response.authResponse)
+                        .then(result => {
+                            // console.log(result)
+                            localStorage.setItem('token', result.data)
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+                }
+
+
+            });
+        }
+    </script>
+
+    <button id="getData">Show All Repositories</button>
     <br>
     <h3>Add repo:</h3>
     <form method="POST">
         <input type="text" id="content" name="repo" placeholder="Input repo name">
-        <button id="submit">Submit</button>
+        <button id="submitrepo" name="submitrepo">Submit</button>
     </form>
-    <br>
     <br>
     <h3>Search for Repo:</h3>
     <form method="GET">
         <input type="text" id="input" name="repo" placeholder="Search repositories">
-        <button id="search" type="submit">Search</button>
+        <button id="searchrepo" name="searchrepo" type="submit">Search</button>
     </form>
     <h3 id="msg"></h3>
     <ol></ol>
-    
+
     <script>
+        if (localStorage.hasOwnProperty('token')) {
+            document.getElementById("getData").disabled = false;
+            document.getElementById("submitrepo").disabled = false;
+            document.getElementById("searchrepo").disabled = false;
+        } else {
+            document.getElementById("getData").disabled = true;
+            document.getElementById("submitrepo").disabled = true;
+            document.getElementById("searchrepo").disabled = true;
+        }
         $('#getData').click(function () {
             $.ajax({
                 url: 'http://localhost:3000/git',
                 method: 'GET'
             })
-            .done(function (data) {
-                $("#msg").text(data.msg)
-                $.each(data.data, function(i, data) {
-                    $("ol").append(`<li>${data.name}</li>`)
+                .done(function (data) {
+                    $("#msg").text(data.msg)
+                    $.each(data.data, function (i, data) {
+                        $("ol").append(`<li>${data.name}</li>`)
+                    })
                 })
-            })
-            .fail(function (err) {
-                $("#error").text(error)
-            })
+                .fail(function (err) {
+                    $("#error").text(error)
+                })
         })
 
-        $("#submit").click(function () {
+        $("#submitrepo").click(function () {
             event.preventDefault();
             let content = {
                 name: $("#content").val()
@@ -69,7 +120,7 @@
                 })
         })
 
-        $("#search").click(function () {
+        $("#searchrepo").click(function () {
             event.preventDefault();
             let searchData = $("#input").val();
             // console.log('==>>', searchData)
@@ -77,23 +128,22 @@
             $.ajax({
                 url: `http://localhost:3000/git/search`,
                 method: 'GET',
-                data: {q: searchData}
+                data: { q: searchData }
             })
-            .done(function (res) {
-                // console.log(res)
-                $("#msg").text(res.msg)
-                for (let i = 0; i < res.data.items.length; i++) {
-                    $("ol").append(`<li>${res.data.items[i].name}</li>`)
-                }
-            })
-            .fail(function (err) {
-                // alert(`Error!`);
-                console.log(err);
-            })
+                .done(function (res) {
+                    // console.log(res)
+                    $("#msg").text(res.msg)
+                    for (let i = 0; i < res.data.items.length; i++) {
+                        $("ol").append(`<li>${res.data.items[i].name}</li>`)
+                    }
+                })
+                .fail(function (err) {
+                    // alert(`Error!`);
+                    console.log(err);
+                })
         })
-
-
     </script>
+
 </body>
 
 </html>
