@@ -1,6 +1,8 @@
 const User = require('../model/user');
-const FB = require('fb');
+// const FB = require('fb');
+require('dotenv').config()
 const jwt = require('jsonwebtoken')
+const axios = require ('axios')
 
 module.exports = {
   login : function (req,res) {
@@ -18,24 +20,24 @@ module.exports = {
             if (user == null) {
               //no user found with above email, register the user
               let newUser = {
-                fbId : resFB.id,
-                name : resFB.name,
-                email : resFB.email,
+                fbId : resFB.data.id,
+                name : resFB.data.name,
+                email : resFB.data.email,
               }
-              User.create(newUser, function (err, book) {
+              User.create(newUser, function (err, user) {
                 if (err) {
                   res.status(500)
                       .json({message : "internal server error"})
                 } else {
-                  let token = jwt.sign({id : resFB.id, name : resFB.name, email : resFB.email}, process.env.secret_key)
+                  let token = jwt.sign({id : resFB.data.id, name : resFB.data.name, email : resFB.data.email}, process.env.secret_key)
                   res.status(200)
                       .json({message : "successfully login/register" , token : token})
                 }
               })
 
             } else {
-              let token = jwt.sign({id : resFB.id, name : resFB.name, email : resFB.email}, process.env.secret_key)
-              console.log(token)
+              let token = jwt.sign({id : resFB.data.id, name : resFB.data.name, email : resFB.data.email}, process.env.secret_key)
+              // console.log(token)
               res.status(200)
                   .json({message : "successfully login/register" , token : token})
             }

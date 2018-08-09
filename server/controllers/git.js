@@ -3,6 +3,7 @@ require('dotenv').config()
 
 module.exports = {
   getUserRepo : (req,res) => {
+    console.log("lsadad")
     request(
       {
         url: `https://api.github.com/users/${req.query.user}/repos?access_token=${process.env.access_token}`,
