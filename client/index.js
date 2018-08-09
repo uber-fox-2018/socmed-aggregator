@@ -68,8 +68,11 @@ $('#search').click(function() {
     $.each(data.repositories.items, function(i, value) {
       $('table').append(`
         <tr>
-        <td><img src="${value.owner.avatar_url}" width="100"></td>
-        <td><a href="${value.owner.html_url}" style="text-decoration: none">${value.name}</a></td>
+        <td>
+          <img src="${value.owner.avatar_url}" width="100"> <br>
+          <a href="${value.owner.html_url}" style="text-decoration: none">Lihat Profile</a>
+        </td>
+        <td><a href="${value.html_url}" style="text-decoration: none">${value.name}</a></td>
         </tr> 
       `)
     })

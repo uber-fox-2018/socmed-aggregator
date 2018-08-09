@@ -5,6 +5,14 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors')
+const mongoose = require('mongoose')
+
+mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true})
+const db = mongoose.connection
+db.on('error', console.error.bind(console, 'connection error'))
+db.once('open', () => {
+  console.log("Connected dabatase success")
+})
 
 const indexRouter = require('./routes/index');
 const githubRouter = require('./routes/github');

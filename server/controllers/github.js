@@ -1,6 +1,52 @@
 const request = require('request')
+const axios = require('axios')
+const jwt = require('jsonwebtoken')
+const User = require('../models/user')
+
 
 module.exports = {
+
+  signinFacebook: (req, res) => {
+    const { accessToken, userID } = req.body
+    let url_user_info = `https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}` //disimpan di server
+    axios.get(url_user_info)
+      .then(result => {
+
+        User.findOne({ email: result.data.email})
+          .then(data => {
+            if (data) {
+              const token = jwt.sign({
+                userID: data.userID,
+                name: data.name
+              }, process.env.JWT_SECRET_KEY)
+              res.status(200).json({
+                message: "Success login",
+                token: token
+              })
+            } else {
+              User.create({
+                userID: userID,
+                name: result.data.name,
+                email: result.data.email
+              })
+              .then(() => {
+                const token = jwt.sign({
+                  userID: userID,
+                  name: result.data.name
+                }, process.env.JWT_SECRET_KEY)
+                res.status(200).json({
+                  message: "Login success",
+                  token: token
+                })
+              })
+            }
+          })
+      })
+      .catch(err => {
+        console.log(err.message)
+      })
+  },
+
   listRepository: (req, res) => {
     const options = {
       url: `https://api.github.com/users/arisupriatna14/repos?access_token=${process.env.ACCESS_TOKEN}`,

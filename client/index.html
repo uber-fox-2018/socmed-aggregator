@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Github-API</title>
+  <title>Login</title>
   <link rel="icon" href="https://octodex.github.com/images/electrocat.png" sizes="16x16" type="image/png">
   <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
@@ -15,38 +15,54 @@
 </head>
 
 <body>
-  <div class="topnav">
-    <a class="active" href="#home">Home</a>
-    <a href="#" id="data">My Repository</a>
-    <div class="search-container">
-      <form method="GET">
-        <input type="text" name="repository" id="repository" placeholder="Search repository...">
-        <button type="submit" id="search">
-          <i class="fa fa-search"></i>
-        </button>
-      </form>
-    </div>
-  </div>
+  <script>
 
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '1978783685746477',
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v3.1'
+      });
+    };
+
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) { return; }
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    const access_token = localStorage.getItem('token')
+    if (access_token) {
+      window.location = 'http://localhost:8080/home.html'
+    }
+
+    function checkLoginState() {
+      FB.getLoginStatus(function (response) {
+
+        console.log(response)
+        if (response.status === 'connected') {
+          axios.post('http://localhost:3030/api/signin/facebook', response.authResponse)
+            .then(result => {
+              localStorage.setItem('token', result.data.token)
+              window.location = 'http://localhost:8080/home.html'
+            })
+            .catch(err => {
+              console.log(err)
+            })
+          console.log('Berhasil login')
+        }
+      });
+    }
+
+  </script>
+  <br>
+  <br>
   <center>
-    <img src="https://octodex.github.com/images/electrocat.png" alt="" width="400">
+    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
   </center>
-
-  <form method="POST" style="max-width:500px;margin:auto">
-    <div id="alert"></div>
-    <h5 id="error"></h5>
-    <div class="input-container">
-      <i class="fa fa-github-alt icon"></i>
-      <input type="text" class="input-field" name="name" id="reponame" placeholder="Enter repository name">
-    </div>
-    <button type="submit" class="btn" id="submit">Create</button>
-  </form>
-  <br><br>
-
-  <table id="listrepos" style="max-width:500px;margin:auto"></table>
-  
-
-  <script src="index.js"></script>
 </body>
 
 </html>
