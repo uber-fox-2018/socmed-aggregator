@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Github-API</title>
+  <link rel="icon" href="https://octodex.github.com/images/electrocat.png" sizes="16x16" type="image/png">
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+</head>
+  <script>
+    const access_token = localStorage.getItem('token')
+    if (!access_token) {
+      window.location = 'http://localhost:8080/index.html'
+    }
+  </script>
+<body>
+  <div class="topnav">
+    <a class="active" href="#home">Home</a>
+    <a href="#" id="data">My Repository</a>
+    <a href="#" id="logout">Logout</a>
+    <div class="search-container">
+      <form method="GET">
+        <input type="text" name="repository" id="repository" placeholder="Search repository...">
+        <button type="submit" id="search">
+          <i class="fa fa-search"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <center>
+    <img src="https://octodex.github.com/images/electrocat.png" alt="" width="400">
+  </center>
+
+  <form method="POST" style="max-width:500px;margin:auto">
+    <div id="alert"></div>
+    <h5 id="error"></h5>
+    <div class="input-container">
+      <i class="fa fa-github-alt icon"></i>
+      <input type="text" class="input-field" name="name" id="reponame" placeholder="Enter repository name">
+    </div>
+    <button type="submit" class="btn" id="submit">Create</button>
+  </form>
+  <br>
+  <br>
+
+  <table id="listrepos" style="max-width:500px;margin:auto"></table>
+
+
+  <script src="index.js"></script>
+  <script>
+    $('#logout').click(function() {
+      localStorage.clear()
+      window.location = 'http://localhost:8080/index.html'
+    })
+  </script>
+</body>
+
+</html>
