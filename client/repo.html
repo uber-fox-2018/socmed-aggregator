@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Github portal</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+</head>
+<body>
+  <script>
+    window.onload = function () {
+      if (!localStorage.getItem("token")) {
+        window.location= "http://localhost:8080"
+      }
+    }
+  </script>
+    <nav>
+      <div class="nav-wrapper deep-orange darken-1 z-depth-0">
+        <div class="container">
+            <h5 href="#" class="left">Github Portal</h5>
+            <ul id="nav-mobile" class="right">
+              <li><a href="/home.html">Search People Repo</a></li>
+              <li><a href="/topic.html">Search Topic</a></li>
+              <li><a href="#">Create Repo</a></li>
+              <li><a onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container center-align">
+      <h2 class="deep-orange-text text-darken-1" >Create a new github repository</h2>
+      <input id = "inputRepo" class="col s6" type="text" name="gitName" placeholder="New repo name">
+      <p id = "alertSearchUser" style="display: none; color : red">Error create repo</p>
+      <a onclick="createRepo()" class="waves-effect waves-light btn-small">Create Repo</a>
+
+      <div id="list" style="margin-top: 20px"></div>
+    </div>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="./script/logout.js"></script>
+  <script>
+    function createRepo() {
+      let topic = document.getElementById('inputRepo').value
+      axios.post(`http://localhost:3000/api/git/createrepo`,{
+        name : topic
+      },{
+        headers :{
+          token : localStorage.getItem("token")
+        }
+      })
+        .then(function(response) {
+          swal("Success!", response.data.message, "success");
+        })
+        .catch (function (err) {
+          $("#alertSearchUser").css("display","block")
+        })
+      }
+  </script>
+</body>
+</html>
