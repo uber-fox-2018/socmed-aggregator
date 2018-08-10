@@ -48,29 +48,28 @@
         }
       })
         .then(function(response) {
-          let responsesData = response.data.data
+          let responsesData = response.data.data.items
           //still on progress
           console.log(responsesData)
-          
-          // $("#list").html("");
-          // $.each(responsesData, function (key, data) {
-          //   $("#list").append(`
-          //   <div class="row">
-          //     <div class="col s12">
-          //       <div class="card">
-          //         <div class="card-content deep-orange darken-1 " style="padding: 5px">
-          //           <span class="card-title grey-text text-lighten-5 left-align">Repo : ${data.name}</span>
-          //         </div>
-          //         <div class="card-content black-text left-align">
-          //           <p>Repo Url : ${data.html_url}</p>
-          //           <p>Description : ${data.description}</p>
-                    
-          //         </div>
-          //       </div>
-          //     </div>
-          //   </div>
-          //   `)
-          // })
+        
+          $("#list").html("");
+          $.each(responsesData, function (key, data) {
+            $("#list").append(`
+            <div class="row">
+              <div class="col s12">
+                <div class="card">
+                  <div class="card-content deep-orange darken-1 " style="padding: 5px">
+                    <span class="card-title grey-text text-lighten-5 left-align">Topic Name : ${data.display_name}</span>
+                  </div>
+                  <div class="card-content black-text left-align">
+                    <p>Created By : ${data.created_by}</p>
+                    <p>Description : ${data.short_description}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            `)
+          })
         })
         .catch (function (err) {
           $("#alertSearchUser").css("display","block")
