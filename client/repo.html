@@ -22,6 +22,7 @@
               <li><a href="/home.html">Search People Repo</a></li>
               <li><a href="/topic.html">Search Topic</a></li>
               <li><a href="#">Create Repo</a></li>
+              <li><a onclick="logout()">Logout</a></li>
             </ul>
         </div>
       </div>
@@ -37,6 +38,7 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="./script/logout.js"></script>
   <script>
     function createRepo() {
       let topic = document.getElementById('inputRepo').value
