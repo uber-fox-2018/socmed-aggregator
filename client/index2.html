@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<style>
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td,
+  th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+</style>
+
+<body>
+  <script>
+    let token = localStorage.getItem('token')
+    if (!token) {
+      window.location = 'http://localhost:8080/index.html'
+    }
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '721780258213034', // ganti APP ID
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v3.1'
+      });
+    };
+
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) { return; }
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    function checkLoginState() {
+      FB.getLoginStatus(function (response) {
+        if (response.status === 'connected') {
+          axios.post('http://localhost:3000/signin/facebook', {
+            authRes: response.authResponse
+          })
+            .then((result) => {
+              localStorage.setItem('token', result.data.token)
+            })
+            .catch(err => {
+              console.log(err);
+            })
+        }
+      });
+    }
+  </script>
+  <!-- <button onclick="test()">test</button> -->
+  <br>
+  <button onclick="logout()">Logout</button>
+  <hr>
+  <label>Search User on GitHab</label>
+  <input id="username" type="text" name="username">
+  <button onclick="search()">Search</button>
+  <table>
+    <thead>
+      <th>User On GitHab</th>
+    </thead>
+    <tbody>
+      <td id="value"></td>
+    </tbody>
+  </table>
+  <br>
+  <label>Repositories Name: </label>
+  <br>
+  <br>
+  <h3 id="msgCreateRepos"></h3>
+  <input id="nameRepos" type="text">
+  <br>
+  <br>
+  <button onclick="createRepos()">Create Repositories</button>
+  <script>
+    function test() {
+      axios.get('http://localhost:3000/')
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(err => {
+          console.log(err, 'err====')
+        })
+    }
+
+    function search() {
+      axios.post('http://localhost:3000/user', {
+        username: $("#username").val()
+      })
+        .then(response => {
+          let username = response.data.data.items[0]
+          if (username) {
+            $('#value').text(username.login)
+          } else {
+            $('#value').text(`${$("#username").val()} Not Found`)
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }
+
+    function createRepos() {
+      let tokenServer = localStorage.getItem('token')
+      if (tokenServer) {
+        let nameRepos = $('#nameRepos').val()
+        axios.post('http://localhost:3000/user/repos/create', {
+          reposName: nameRepos
+        })
+          .then(response => {
+            $('#msgCreateRepos').text(`${response.data.message} ${response.data.data.name}`).css('color', 'green')
+          })
+          .catch(err => {
+            $('#msgCreateRepos').text('failed to create repository').css('color', 'red')
+          })
+      } else {
+        $('#msgCreateRepos').text('Please Login Dulu').css('color', 'red')
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('token')
+      window.location = 'http://localhost:8080/index.html'
+    }
+  </script>
+</body>
+
+</html>

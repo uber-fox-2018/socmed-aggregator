@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<style>
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td,
+  th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+</style>
+
+<body>
+  <script>
+    let token = localStorage.getItem('token')
+    if (token) {
+      window.location = 'http://localhost:8080/index2.html'
+    }
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '721780258213034', // ganti APP ID
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v3.1'
+      });
+    };
+
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) { return; }
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js"
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    function checkLoginState() {
+      FB.getLoginStatus(function (response) {
+        if (response.status === 'connected') {
+          axios.post('http://localhost:3000/signin/facebook', {
+            authRes: response.authResponse
+          })
+            .then((result) => {
+              localStorage.setItem('token', result.data.token)
+              window.location = 'http://localhost:8080/index2.html'
+            })
+            .catch(err => {
+              console.log(err);
+            })
+        }
+      });
+    }
+  </script>
+  <!-- <button onclick="test()">test</button> -->
+  <br>
+  <label>Login On GitHab</label>
+  <br>
+  <h3 id="msg"></h3>
+  <input id="name" type="text" name="name">
+  <br>
+  <br>
+  <button onclick="login()">Login</button>
+  <label for="">Or</label>
+  <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+  </fb:login-button>
+  <br>
+  <hr>
+  <script>
+    function login() {
+      axios.post('http://localhost:3000/signin', {
+        name: $('#name').val()
+      })
+        .then(response => {
+          let name = response.data.name
+          if (name) {
+            $("#msg").text(`User, ${response.data.name} successfully to Login!`).css('color', 'green')
+            
+          } else {
+            $("#msg").text(`Username or password wrong`).css('color', 'red')
+          }
+        })
+        .catch(err => {
+          $("#msg").text(`You must be register`).css('color', 'red')
+        })
+    }
+  </script>
+</body>
+
+</html>
