@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script>
+		if (localStorage.getItem("token")) {
+			axios.post('http://localhost:3000/api/fb/login/verifytoken', { token: localStorage.getItem("token") })
+				.then(function ({data}) {
+					if(data.message = "OK"){
+						window.location.replace("./github.html");
+					}
+					else{
+						localStorage.setItem("token", null)
+					}
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+		}
+
+		window.fbAsyncInit = function () {
+			FB.init({
+				appId: "442470792905488",
+				autoLogAppEvents: true,
+				xfbml: true,
+				version: 'v3.1'
+			});
+		};
+
+		(function (d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) { return; }
+			js = d.createElement(s); js.id = id;
+			js.src = "https://connect.facebook.net/en_US/sdk.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+
+		function checkLoginState() {
+			FB.getLoginStatus(function ({ authResponse }) {
+				axios.post('http://localhost:3000/api/fb/login', authResponse)
+					.then(function (response) {
+						console.log("response fromserver",response);
+						localStorage.setItem("token", response.data.token);
+						window.location.replace("./github.html");
+					})
+					.catch(function (error) {
+						console.log(error);
+					});
+
+			});
+		}
+	</script>
+	<h1>Ini index</h1>
+	<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+	</fb:login-button>
+</body>
+
+</html>
