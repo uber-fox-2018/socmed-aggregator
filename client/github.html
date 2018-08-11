@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+</head>
+<body>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script>
+		if (localStorage.getItem("token")) {
+			console.log(localStorage.getItem("token"));
+			axios.post('http://localhost:3000/api/fb/login/verifytoken', { token: localStorage.getItem("token") })
+				.then(function ({data}) {
+					if(data.message = "OK"){
+					}
+					else{
+						localStorage.setItem("token", null)
+						window.location.replace("./");
+					}
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+		}
+		else{
+			window.location.replace("./");
+		}
+
+		function clearResult(){
+			let result = document.getElementById("result");
+			result.innerHTML=null;
+		}
+
+		function seeYourOwnRepo(){
+			clearResult();
+			axios.get("http://localhost:3000/api/github/me")
+			.then(({data})=>{
+				let result = document.getElementById("result");
+				let appendedHTML="";
+				for(let repo of data.data){
+					appendedHTML+=`<a>${repo.name}</a><br>`;
+				}
+				result.innerHTML=appendedHTML;
+			})
+			.catch((err)=>{
+				console.log(err)
+			})
+		}
+
+		function searchOtherReposByName(){
+			clearResult();
+			let repoNameToSearch = document.getElementById("repoName").value;
+			axios.get(`http://localhost:3000/api/github/search-repo-name/${repoNameToSearch}`)
+			.then(({data})=>{
+				let result = document.getElementById("result");
+				let appendedHTML="";
+				for(let repo of data.data.items){
+					appendedHTML+=`<a>${repo.name}</a><br>`;
+				}
+				result.innerHTML=appendedHTML;
+			})
+			.catch((err)=>{
+				console.log(err)
+			})
+		}
+
+		function createRepo(){
+			clearResult();
+			let repoNameToCreate = document.getElementById("repoNameToCreate").value;
+			axios.post(`http://localhost:3000/api/github//me/create-repo/${repoNameToCreate}`)
+			.then(({data})=>{
+				console.log(data)
+				let result = document.getElementById("result");
+				let appendedHTML=`<a href="${data.data.html_url}">${repoNameToCreate} has been created. click here to view it</a><br>`;
+				result.innerHTML=appendedHTML;
+			})
+			.catch((err)=>{
+				console.log(err)
+			})
+		}
+
+		function logout(){
+			localStorage.setItem("token", null)
+			window.location.replace("./");
+		}
+
+
+	</script>
+	THIS IS GITHUB PAGE ! <button onclick="logout()">Logout here</button><br>
+	(you need to config .env.githubToken to do make this work!)<br>
+	Happy weekend :)<br>
+
+	<button onclick="seeYourOwnRepo()">See your own repos</button><br><br>
+	<input type="text" name="repoName" id="repoName"><br>
+	<button onclick="searchOtherReposByName()">Search other repo by name</button><br><br>
+	<input type="text" name="repoName" id="repoNameToCreate"><br>
+	<button onclick="createRepo()">Create Repo</button>
+
+
+
+	<br>
+	<br>
+	<h2>Result</h2>
+	<div id="result">
+	</div>
+</body>
+</html>
