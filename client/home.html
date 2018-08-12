@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script
+			  src="https://code.jquery.com/jquery-3.3.1.js"
+			  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+			  crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+<body>
+        <nav class="navbar navbar-dark bg-dark">
+                <a class="navbar-brand" onclick="logout()" href="#">Log out</a>
+              </nav>
+              <br><br>
+   
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                    <input type="text" id="repo"><br><br>
+                    <button onclick="addRepo()">
+                        add Repo
+                    </button>
+                    <br><br>
+                <div class="container">
+
+                    <ul class="list-group" id="testing">
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                <input type="text" id="search"><br><br>
+                <button onclick="searchRepo()">
+                        search Users
+                    </button>
+                    <br><br>
+                    <div class="container">
+                        <div class="row">
+                            <ul class="list-group" id="data">
+                            <div class="col"> 
+                            </div>
+                        </ul>
+                        </div>
+                       
+                    </div>
+            </div>
+        </div>
+         
+    </div>
+        
+
+    <script>
+
+        (function wooof(){
+            axios.get('http://localhost:3000/myRepo')
+            .then(data=>{
+                console.log(data.data[0])
+                for(let i=0;i<data.data.length;i++){
+                    $('#testing').append(`<li class="list-group-item">${data.data[i].name}</li>`)
+                }
+            })
+            .catch(err=>{
+                console.log(err)
+            }) 
+        })();
+
+        function addRepo(){
+            let token = localStorage.getItem('token')
+            var repo = $("#repo").val()
+            console.log(repo)
+            axios.post('http://localhost:3000/createRepo',{
+                name : repo
+            },{
+                headers : {
+                    token : token
+                }
+            })
+            .then(newRepo=>{
+                console.log(newRepo)
+                location.reload()
+            })
+        }
+
+        function searchRepo(){
+            let repo = $('#search').val()
+            let token = localStorage.getItem('token')
+            console.log(repo)
+            axios.get(`http://localhost:3000/searchRepo?keyword=${repo}`,{
+                headers : {
+                    token : token
+                }
+            })
+            .then(data=>{
+                console.log(data)
+                $.each(data.data.items,function(i,value){
+                    $('#data').append(`<li class="list-group-item">${value.login}
+                            <img src="${value.avatar_url}" class="card-img-top" alt="" style="object-fit: cover;"></li>
+                    `)
+                })
+
+
+            })
+        }
+        
+        
+
+    
+    </script>
+
+
+
+
+
+<script src="js/fb.js"></script>
+</body>
+</html>
