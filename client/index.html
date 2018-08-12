@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Kneric Gitbruh Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+</head>
+<body>
+  <script>
+    window.onload = function (){
+      if (localStorage.getItem('token')){
+        window.location = 'http://localhost:8080/me.html'
+      }
+    }
+    
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId            : '226380818062847',
+        autoLogAppEvents : true,
+        xfbml            : true,
+        version          : 'v3.1'
+      });
+    };
+    
+    function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+        if (response.status == 'connected'){
+          axios.post('http://localhost:3000/login', response.authResponse)
+          .then(data => {
+            console.log(data);
+            localStorage.setItem('token', data.data.token)
+          })
+          .catch(err => {
+            $('#notLoggedIn').css('display','inline')
+          })
+        }
+      });
+    }   
+
+    (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+</script>
+
+<div class="container center" style="margin-top:400px">
+  <a class="fb-login-button waves-effect waves-light blue darken-3 pulse" scope="public_profile,email" onlogin="checkLoginState();"></a>
+</div>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+</body>
+</html>
