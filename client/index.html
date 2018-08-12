@@ -32,9 +32,10 @@
           .then(data => {
             console.log(data);
             localStorage.setItem('token', data.data.token)
+            window.location = 'http://localhost:8080/me.html'
           })
           .catch(err => {
-            $('#notLoggedIn').css('display','inline')
+            $('#notLoggedIn').removeClass('white-text')
           })
         }
       });
@@ -51,7 +52,10 @@
 </script>
 
 <div class="container center" style="margin-top:400px">
+  <h4><span class="blue-text">Click button below to proceed:</span></h4>
   <a class="fb-login-button waves-effect waves-light blue darken-3 pulse" scope="public_profile,email" onlogin="checkLoginState();"></a>
+  <br><br>
+  <h5><span id="notLoggedIn" class="white-text">Invalid username/password!</span></h5>
 </div>
 
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>

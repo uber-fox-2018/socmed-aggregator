@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Kneric Gitbruh Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+</head>
+<body>
+  <script>
+    window.onload = function (){
+      if (!localStorage.getItem('token')){
+        window.location = 'http://localhost:8080'
+      } else {
+        axios.get('http://localhost:3000/me')
+        .then(response => {
+          let userData = response.data;
+
+          $('#gitUserName').text(`${userData.login}'s Github Info`)
+          $.each(userData, function (key, data) {
+            $('#gitUserInfo').append(`<li>${key}: ${data}</li>`)
+          })
+        })
+        .catch(err => {
+          $('#container').append(`<h3>${err}</h3>`)
+        })
+      }
+    }
+</script>
+
+<div class="navbar-fixed">
+  <nav>
+    <div class="nav-wrapper blue darken-4">
+      <ul id="nav-mobile" class="center hide-on-med-and-down">
+        <li><a href="/search.html" class="waves-effect waves-light">Search Repo</a></li>
+        <li><a href="#/create.html" class="waves-effect waves-light">Create Repo</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<div class="container center-align">
+  <div class="row">
+    <div class="col s12">
+      <div class="card">
+        <div class="card-content blue darken-1 ">
+          <span id="gitUserName" class="card-title white-text left-align"></span>
+        </div>
+        <div id="gitUserInfo" class="card-content black-text left-align">          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+</body>
+</html>
