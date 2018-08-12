@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Gitbruh Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+</head>
+<body>
+
+<div class="navbar-fixed">
+  <nav>
+    <div class="nav-wrapper blue darken-4">
+      <ul id="nav-mobile" class="center hide-on-med-and-down">
+        <li><a href="/search.html" class="waves-effect waves-light">Search User</a></li>
+        <li><a href="#/create.html" class="waves-effect waves-light">Create Repo</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<div class="container center-align">
+  <div class="row">
+    <div class="col s12">
+      <div class="card">
+        <div class="card-content blue darken-1 ">
+          <span class="card-title white-text left-align">Search user</span>
+        </div>
+        <div class="card-content black-text left-align">
+          <input id="searchQ" type="text" placeholder="input username">     
+          <a id="searchBtn" class="waves-effect waves-light btn-large blue white-text">Search User</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div id="searchResult" class="col s12">
+
+    </div>
+  </div>
+</div>
+
+<script>
+  $('#searchBtn').click(()=> {
+    let Q = $('#searchQ').val();
+
+    axios.get(`http://localhost:3000/search/user?name=${Q}`)
+    .then(response => {
+      let users = response.data.items;
+      
+      users.forEach(user => {
+        let resultHTML = `
+        <div class="card">
+          <div class="card-content blue darken-1 ">
+            <span class="card-title white-text left-align">${user.login}'s Info</span>
+          </div>
+          <div class="card-content black-text left-align">
+        `
+        $.each(user, function (key, value){
+          resultHTML += `<p>${key}: ${value}</p>`
+        })
+            
+        resultHTML += '</div></div>'
+
+        $('#searchResult').append(resultHTML)
+      })
+      console.log(response.data.items);
+    })
+    .catch(err=> {
+      $('#searchResult').append(`
+      <h3>${err}</h3>
+      `)
+    })
+  })
+</script>
+
+</body>
+</html>

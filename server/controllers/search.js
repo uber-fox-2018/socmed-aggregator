@@ -1,7 +1,6 @@
 const request = require('request');
 
 const searchUser = (req, res) => {
-  console.log(req.query.name);
   let options = {
     url: `https://api.github.com/search/users?q=${req.query.name}`,
     headers: {
