@@ -15,7 +15,7 @@
   <script>
     window.onload = function (){
       if (localStorage.getItem('token')){
-        window.location = 'http://localhost:8080/me.html'
+        window.location = 'http://localhost:8080/aboutme.html'
       }
     }
     
@@ -35,7 +35,7 @@
           .then(data => {
             console.log(data);
             localStorage.setItem('token', data.data.token)
-            window.location = 'http://localhost:8080/me.html'
+            window.location = 'http://localhost:8080/aboutme.html'
           })
           .catch(err => {
             $('#notLoggedIn').removeClass('white-text')
