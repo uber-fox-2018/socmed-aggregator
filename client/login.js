@@ -1,12 +1,19 @@
   function statusChangeCallback(response) {
-    // console.log('statusChangeCallback');
-    // console.log(response);
-    localStorage.setItem('token', response.authResponse.accessToken)
     if (response.status === 'connected') {
-      testAPI();
+        axios.post('http://localhost:3000/users/login', {
+          fbToken: response.authResponse.accessToken
+        })
+        .then(function(response) {
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("name", response.data.name);
+          window.location= "home.html" 
+        })
+        .catch(function(error) {
+          alert(error)
+        })
     } else {
-      // document.getElementById('status').innerHTML = 'Please log ' +
-      //   'into this app.';
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this app.';
     }
   }
 
@@ -37,26 +44,9 @@
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 
-  function testAPI() {
-    FB.api('/me',{fields: ["id", "name", "email"]} , function(response) {
-      window.location='home.html'
-      axios.post('http://localhost:3000/users/register', {
-        fbId: response.id,
-        name: response.name,
-        email: response.email
-      })
-      .then(user => {
-        console.log('ini user-----',user);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    });
-  }
-
-
   function logout(){
     localStorage.removeItem('token')
+    localStorage.removeItem('name')
     window.location='index.html'
     FB.logout(function(response){
       statusChangeCallback(response)

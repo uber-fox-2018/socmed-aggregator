@@ -14,7 +14,8 @@
     <title>Github</title>
 </head>
 <body>
-    <button id="logout" onclick="logout()" style="margin-top: 10px; margin-left: 10px;">Logout</button>
+    <h3 id="name">Welcome </h3>
+    <button id="logout" onclick="logout()" style="margin-top: 10px; margin-right: 10px; float: right;">Logout</button>
     <div class="container">
         <div class="row">
         <div class="col-sm">
@@ -85,6 +86,12 @@
             alert('Please login!')
             window.location='index.html'
         }
+    </script>
+    <script>
+    $(document).ready(function() {
+        let theName = localStorage.getItem('name')
+        $("#name").append(theName)
+    });
     </script>
     <script src="login.js"></script>
 </body>

@@ -6,16 +6,11 @@
 <meta charset="UTF-8">
 </head>
 <body>
-  <!-- <form>
-    <h3 style="text-align: center">Login</h3>
-    <div style="display: flex; justify-content: center;"></div>
-    <img src="facebook.png" align="middle" width="300" height="150" onclick="checkLoginState()">
+  <div style="margin-left: 30%">
+      <h3>Please login with your facebook account to create or search repository</h3>
+      <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+      </fb:login-button>
   </div>
-    <button id="logout" onclick="logout()" style="background-color: aqua; width: 50px">Logout</button>
-  </form> -->
-  <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-  </fb:login-button>
-
   <div id="status">
   </div>
   <script src="login.js"></script>
