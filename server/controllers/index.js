@@ -1,60 +1,86 @@
 const request = require('request');
-const axios  = require('axios')
+const rp = require('request-promise');
+const jwt = require('jsonwebtoken');
 
-const options = (url)=>{
+function options (url){
     return {
-        url,
+        uri : url,
+        qs : {
+            access_token : `${process.env.ACCESS_TOKEN}` // -> uri + '?access_token=xxxxx%20xxxxx'
+        }, 
         headers:{
             'User-Agent' : 'request',
             Accept : "application/vnd.github.nightshade-preview+json",
             'Content-Type': 'application/json',
-
+            Authorization: `token ${process.env.ACCESS_TOKEN}`
         },
+        json: true
     }
 }
 
+
 module.exports = {
-    index : (req, res) => {
-        res.status(200).json({message:'HI THERE!'})
-    },
-
-    listUserRepos : (req, res) => {
-        let username = req.params.username
-        request.get(options(`https://api.github.com/users/${username}/repos`), function callback(error, response, body) {
-            res.status(200).json({
-                msg:"success",
-                data:JSON.parse(body)
-            })
+    home :(req, res) =>{
+        res.status(200).json({
+            msg: "WELCOME!!!"
         })
     },
 
-    searchUser : (req,res) => {
-        const name = req.params.username
-        request.get(options(`https://api.github.com/search/users?q=${name}`), function callback(error, response, body) {
-            res.status(200).json({
-                msg:"success",
-                data:JSON.parse(body)
+    listUserRepos : (req , res) =>{
+        rp(options("https://api.github.com/user/repos"))
+            .then(repos=>{
+                res.status(200).json({
+                    msg : `User has ${repos.length} repos`, 
+                    repos
+                })
             })
-        })       
-    },
+            .catch(err=>{
+                res.status(500).json(err)
+            })
+    }, 
     
-    createRepo : (req, res) =>{
-        let token = req.params.token
-        let repoName = req.params.repoName
-        axios.post(`https://api.github.com/user/repos?access_token=${token}`,{
-            name : repoName
-        }, {headers:{
-            'User-Agent' : 'request',
-            Accept : "application/vnd.github.nightshade-preview+json",
-            'Content-Type': 'application/json',
-        }})
-        .then(response=>{
-            res.status(201).json({
-                data: response.data
+    searchUsers : (req , res) =>{
+        const name = req.query.name
+        rp(options(`https://api.github.com/search/users?q=${name}`))
+            .then(users =>{
+                res.status(200).json({
+                    msg : `There are ${users.total_count} users in total`,
+                    users
+                })
             })
-        })
-        .catch(err=>{
-            res.status(500).json(err)
-        })
+            .catch(err=>{
+                res.status(500).json(err)
+            })
+    }, 
+
+    newRepo : (req , res) =>{
+        const options = {
+            method : "POST",
+            uri : 'https://api.github.com/user/repos',
+            qs : {
+                access_token : `${process.env.ACCESS_TOKEN}` // -> uri + '?access_token=xxxxx%20xxxxx'
+            }, 
+            body : {
+                name : req.body.repoName
+            },
+            headers:{
+                'User-Agent' : 'request',
+                Accept : "application/vnd.github.nightshade-preview+json",
+                'Content-Type': 'application/json',
+                Authorization: `token ${process.env.ACCESS_TOKEN}`
+            },
+            json: true
+        }
+        rp(options)
+            .then(body =>{
+                res.status(200).json({
+                    msg : `${body.name} repo is successfully created!`,
+                    body
+                })
+            })
+            .catch(err=>{
+                res.status(422).json(err.error.errors[0].message)
+                console.log(err.error.errors[0].message)
+            })
     }
 }

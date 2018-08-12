@@ -1,9 +1,14 @@
-const router    = require('express').Router()
-const {index,  listUserRepos, searchUser, createRepo} = require('../controllers/index')
+const router = require('express').Router();
+const auth      = require('../helpers/auth');
+const isLogin = require('../helpers/isLogin');
+const {home, listUserRepos, searchUsers, newRepo} = require('../controllers/index');
 
-router.get('/', index)
-router.get('/list/:username', listUserRepos)
-router.get('/users/:username', searchUser)
-router.post('/create/:token/:repoName', createRepo)
+const authUser  = auth(['customer', 'admin'])
+const authAdmin = auth(['admin'])
+
+router.get('/', home);
+router.get('/list', isLogin, authUser, listUserRepos)
+router.get('/search', isLogin, authUser, searchUsers)
+router.post('/create',isLogin, authAdmin, newRepo)
 
 module.exports = router;
