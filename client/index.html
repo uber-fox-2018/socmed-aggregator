@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous">
+    </script>
+    <script src="./lib.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '2108915722680855',
+                cookie: true,
+                xfbml: true,
+                version: 'v3.1'
+            });
+            FB.AppEvents.logPageView();
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+                return;
+            }
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        function checkLoginState() {
+            FB.getLoginStatus(function (response) {
+               if(response.status =='connected'){
+                   //console.log(response.authResponse)
+                   $.post('http://localhost:3000/login/fb',response.authResponse)
+                   .then(authResponse =>{
+                       console.log('sukses')
+                   })
+               }
+            });
+        }
+    </script>
+
+    <div class="find-User"></div>
+    <h3>find user</h3>
+    <input id="username" type="text">
+    <button id="btn-search-user">search</button>
+    <li id="users"></li>
+    </div>
+
+    <div class="find-Repo">
+        <h3>find repo</h3>
+        <input id="reponame" type="text">
+        <button id="btn-search-repo">search</button>
+        <li id="repos"></li>
+    </div>
+    <div class="list-Repo">
+        <h3>list repos user</h3>
+        <input id="username-repo" type="text">
+        <button id="btn-list-repo">search</button>
+        <li id="listrepos"></li>
+    </div>
+
+    <div class="create-Repo">
+        <h3>create repo </h3>
+        <input id="reponame-create" type="text">
+        <input id="repodescription" type="text">
+        <button id="btn-create-repo">create</button>
+        <li id="createdrepo"></li>
+    </div>
+
+
+
+    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+    </fb:login-button>
+
+
+
+</body>
+
+</html>
