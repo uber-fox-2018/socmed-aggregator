@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    
+</head>
+<body>
+    <h1>GitHuup</h1>
+
+    <script>
+            window.fbAsyncInit = function() {
+              FB.init({
+                appId            : '1358800417586608',
+                autoLogAppEvents : true,
+                xfbml            : true,
+                version          : 'v3.1'
+              });
+            };
+          
+            function checkLoginState(){
+                FB.getLoginStatus(function(response){
+                console.log(response)
+
+               FB.login(function(response) {
+                    if (response.status === 'connected') {
+                        axios.post('http://localhost:3000/signin/facebook', response.authresponse)
+                        
+                        .then(data => {
+                            console.log(data)
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+                        
+                    } 
+                });
+
+                })
+            }
+
+          </script>
+          <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+            </fb:login-button>
+
+
+
+
+    
+</body>
+</html>
