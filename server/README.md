@@ -1,6 +1,7 @@
 # socmed-aggregator
 
 Documentation:
+
 | Routes             | HTTP   | Description                              |
 |--------------------|--------|------------------------------------------|
 | /users/login       | POST   | Login with facebook to access homepage   |
