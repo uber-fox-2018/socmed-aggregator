@@ -1,9 +1,9 @@
+require('dotenv').config()
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-require('dotenv').config()
 var cors = require('cors')
 const mongoose = require('mongoose');
 mongoose.connect(`mongodb://${process.env.dbuser}:${process.env.dbpass}@ds117362.mlab.com:17362/socmedagregation`, { useNewUrlParser: true });
