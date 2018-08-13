@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous">
+    </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+
+    <button onclick="logout()">logout
+    </button>
+    <div>
+        <h3>get your own repo</h3>
+        <button onclick="getOwnRepo()">Get Your Own Repo</button>
+        <br>
+        <h3 id="repo"></h3>
+        <ol id="yours"></ol>
+        <hr>
+    </div>
+    <div>
+        <h3>search github </h3>
+        <input type="text" id="name">
+        <button onclick="search()">search</button>
+        <div id="user"></div>
+    </div>
+    
+    <div id="" name="create repo">
+        <h3>create repo</h3>
+        <input type="text" id="reponame">
+        <button onclick="create()">Crete Repo</button>
+        <p id="newRepo"></p>
+    </div>
+    <h3 id="err"></h3>
+
+    <script>
+        let token = localStorage.getItem('token')
+        if(!token){
+            window.location = `http://localhost:8080/index.html` 
+        }
+        function getOwnRepo() {
+            if (localStorage) {
+                axios.get('http://localhost:3000/getOwnRepo')
+                    .then((result) => {
+                        $('#repo').text('theese are your repo')
+                        result.data.info.forEach(obj => {
+                            $('#yours').append(`
+                                <li>${obj.name}</li>
+                            `)
+                        });
+                    })
+                    .catch((err) => {
+                        $(document).ready(function () {
+                            $("err").text('not found')
+                        })
+                    });
+            } else {
+                $(document).ready(function () {
+                    $("err").text('not found')
+                })
+            }
+        }
+
+        function search() {
+            axios.post('http://localhost:3000/', {
+                name: $("#name").val()
+            })
+                .then((result) => {
+
+                    $("#user").html(`
+                        <a href="${result.data.info.html_url}">${$("#name").val()}</a>
+                    `)
+                })
+                .catch((err) => {
+                    console.log('ini error', err);
+                });
+        }
+
+        function create() {
+            axios.post(`http://localhost:3000/createRepo`,{reponame : $("#reponame").val()})
+            .then((result) => {
+               $("#newRepo").text(`${result.data.msg}`)
+            })
+            .catch((err) => {
+                
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem('token')
+            window.location = `http://localhost:8080/index.html` 
+        }
+    </script>
+</body>
+
+</html>
