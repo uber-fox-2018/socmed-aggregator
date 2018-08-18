@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <title>GitHub Finder</title>
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-success mb-3">
+    <div class="container">
+      <a href="#" class="navbar-brand">Uberfoxhub</a>
+      <button id="getAll" class="btn">Get</button>
+    </div>
+  </nav>
+  <div class="container searchContainer">
+    <div class="search card card-body">
+      <h1>Search Repository in GitHub</h1>
+      <p class="lead">Enter repository</p>
+      <input type="text" id="searchRepo" class="form-control" placeholder="Repository...">
+      <input type="submit" value="Search" class="btn bt mt-3" id="searchBtn">
+    </div>
+    <br>
+    <ol></ol>
+    <div id="profile"></div>
+  </div>
+
+  <div id="data"></div>
+
+  <footer class="mb-5 p-3 text-center bg-light">
+    Uberfoxhub &copy;
+  </footer>
+  
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+  <script>
+    $("#getAll").click(function() {
+        $.ajax({
+            method: "get",
+            url:"http://localhost:3000/api/git"
+        })
+        .done(function(data) {
+            $.each(data.data, function(i, data) {
+                $('ol').append(`<li>${data.name}</li>`)
+            })
+        })
+    })
+
+    $("#searchBtn").click(function() {
+        let search = $("#searchRepo").val()
+        $.ajax({
+            method: "get",
+            url: `http://localhost:3000/api/git/search/${search}`
+        })
+        .done(function(response) {
+            for (let i = 0; i < response.data.items.length; i++) {
+                $('ol').append(`<li>${response.data.items[i].name}</li>`)
+            }
+            // console.log(data.data.items)
+        })
+    })
+
+
+
+    
+    </script>
+</body>
+</html>
